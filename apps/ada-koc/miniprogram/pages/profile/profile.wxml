@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="row">
+    <text class="section-title">声音与形象档案</text>
+    <text class="badge badge-{{status}}">{{statusLabel}}</text>
+  </view>
+  <view wx:if="{{reviewReason}}" class="card error">退回原因：{{reviewReason}}</view>
+  <view wx:if="{{!editable}}" class="hint">档案{{statusLabel}}，以后的任务会直接复用，无需重复录制。</view>
+
+  <block wx:if="{{editable}}">
+    <view class="card">
+      <view class="row">
+        <text class="card-title">1. 录制声音采样</text>
+        <text class="badge {{hasVoice ? 'badge-approved' : ''}}">{{hasVoice ? '已上传' : '未录制'}}</text>
+      </view>
+      <view class="hint">在安静的环境里，用平常说话的语速朗读下面这段话：</view>
+      <view class="segment">{{readingText}}</view>
+      <view class="actions">
+        <button type="{{recording ? 'warn' : 'default'}}" bindtap="onToggleRecord">{{recording ? '停止并上传' : (hasVoice ? '重新录制' : '开始录制')}}</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row">
+        <text class="card-title">2. 拍摄本人参考视频</text>
+        <text class="badge {{hasReference ? 'badge-approved' : ''}}">{{hasReference ? '已上传' : '未拍摄'}}</text>
+      </view>
+      <view class="hint">用前置摄像头，正脸或半身，自然地对着镜头说话 30 秒以上，光线充足、背景简洁。</view>
+      <view class="actions">
+        <button bindtap="onRecordReference">{{hasReference ? '重新拍摄' : '开始拍摄'}}</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row">
+        <text class="card-title">3. 使用确认</text>
+        <text class="badge {{consented ? 'badge-approved' : ''}}">{{consented ? '已确认' : '未确认'}}</text>
+      </view>
+      <view class="hint">（测试版简版文本）我同意 Ada 使用我的声音采样制作复刻音色、使用我的参考视频制作数字人片段和封面，用于我领取的商品推广视频，并会公开发布。我可以随时撤回。</view>
+      <view class="actions">
+        <button wx:if="{{!consented}}" bindtap="onConsent">我已阅读并同意</button>
+      </view>
+    </view>
+
+    <view class="actions">
+      <button type="primary" disabled="{{!hasVoice || !hasReference || !consented || busy}}" bindtap="onSubmit">提交审核</button>
+    </view>
+  </block>
+
+  <view wx:if="{{busy}}" class="hint">{{busy}}</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+</view>

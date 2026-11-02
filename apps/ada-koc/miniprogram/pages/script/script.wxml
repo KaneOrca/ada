@@ -1,0 +1,45 @@
+<view class="page">
+  <block wx:if="{{!selectedId}}">
+    <view class="section-title">选一篇口播稿</view>
+    <view wx:if="{{status === 'loading'}}" class="hint">加载中…</view>
+    <view wx:elif="{{status === 'generating'}}" class="card">
+      <text class="card-title">稿件生成中</text>
+      <view class="hint">正在根据商品资料和你的身份写三篇口播稿，通常需要半分钟到一分钟，生成好后会自动显示。</view>
+    </view>
+    <view wx:elif="{{status === 'materials_not_ready'}}" class="card">
+      <text class="card-title">商品资料准备中</text>
+      <view class="hint">商品资料还在整理，整理好后会自动开始写稿。</view>
+    </view>
+    <view wx:elif="{{status !== 'ready'}}" class="error">稿件生成异常，已通知审核员处理，请稍后再来看看。</view>
+    <view wx:if="{{status === 'generating' || status === 'materials_not_ready'}}" class="actions">
+      <button bindtap="onOpenProfile">等待时先去录声音和形象档案</button>
+    </view>
+    <view wx:elif="{{status === 'ready'}}" class="hint">共 {{candidates.length}} 篇，选中后可以修改台词。都不满意也请选一篇再改。</view>
+
+    <view wx:for="{{candidates}}" wx:key="candidateId" class="card" bindtap="onSelect" data-candidate-id="{{item.candidateId}}">
+      <text class="card-title">{{item.candidateId}} · {{item.angle}}</text>
+      <view wx:for="{{item.segments}}" wx:for-item="segment" wx:key="segmentId" class="segment">
+        <text class="segment-tag">{{segment.sourceLabel}}</text>{{segment.line}}
+      </view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="section-title">修改台词（{{selectedId}}）</view>
+    <view class="hint">只改台词；画面要求会生成拍摄提示。</view>
+    <view wx:for="{{editing}}" wx:key="segmentId" class="card">
+      <view class="row">
+        <text class="card-title">{{item.segmentId}}</text>
+        <text class="badge">{{item.sourceLabel}}</text>
+      </view>
+      <textarea class="editor" value="{{item.line}}" maxlength="200" auto-height data-index="{{index}}" bindinput="onEditLine" />
+      <view class="muted">画面：{{item.focus}}</view>
+    </view>
+    <view class="actions">
+      <button type="primary" loading="{{saving}}" bindtap="onConfirm">确认稿件、进入拍摄</button>
+      <button bindtap="onBack">换一篇</button>
+    </view>
+  </block>
+
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+</view>

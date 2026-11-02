@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="row">
+    <text class="section-title">{{skuName}}</text>
+    <text class="badge badge-{{stage}}">{{stageLabel}}</text>
+  </view>
+  <view wx:if="{{stage === 'in_review'}}" class="hint">已提交，等待审核员审核。</view>
+  <view wx:elif="{{stage === 'producing'}}" class="hint">审核已通过，正在制作成片。</view>
+  <view wx:elif="{{stage === 'deliverable'}}" class="actions">
+    <text class="hint">成片已经就绪。</text>
+    <button type="primary" bindtap="onOpenDelivery">查看成片</button>
+  </view>
+  <view wx:else class="hint">按提示逐项拍摄本人露脸与商品互动；每项最长 60 秒。</view>
+
+  <view wx:for="{{shots}}" wx:key="itemId" class="card">
+    <view class="row">
+      <text class="card-title">第 {{index + 1}} 项</text>
+      <text class="badge badge-{{item.status}}">{{item.statusLabel}}</text>
+    </view>
+    <view class="segment">{{item.prompt}}</view>
+    <view wx:if="{{item.rejectReason && item.status === 'rejected'}}" class="error">退回原因：{{item.rejectReason}}</view>
+    <view wx:elif="{{item.rejectReason && item.status === 'uploaded'}}" class="muted">已重拍，上次退回原因：{{item.rejectReason}}</view>
+    <view wx:if="{{busyItem === item.itemId}}" class="hint">正在上传… {{item.progress}}%</view>
+    <view wx:if="{{item.canUpload}}" class="actions">
+      <button size="mini" disabled="{{busyItem}}" bindtap="onShoot" data-item-id="{{item.itemId}}">{{item.upload ? '重新拍摄' : '拍摄'}}</button>
+    </view>
+  </view>
+
+  <view wx:if="{{stage === 'awaiting_shots' || stage === 'rework'}}" class="actions">
+    <button type="primary" disabled="{{!canSubmit || busyItem}}" bindtap="onSubmit">提交审核</button>
+  </view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+</view>

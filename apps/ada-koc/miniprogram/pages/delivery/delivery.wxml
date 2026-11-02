@@ -1,0 +1,21 @@
+<view class="page">
+  <view class="section-title">成片与封面</view>
+  <view wx:if="{{loading}}" class="hint">正在下载…</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+
+  <block wx:if="{{videoPath}}">
+    <video class="video" src="{{videoPath}}" controls object-fit="contain" />
+    <view class="actions">
+      <button type="primary" bindtap="onSave" data-kind="video">保存成片到相册</button>
+    </view>
+  </block>
+
+  <block wx:if="{{coverPath}}">
+    <image class="cover" src="{{coverPath}}" mode="widthFix" />
+    <view class="actions">
+      <button bindtap="onSave" data-kind="image">保存封面到相册</button>
+    </view>
+  </block>
+
+  <view class="hint">如需修改，请线下联系审核员。</view>
+</view>

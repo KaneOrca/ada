@@ -1,0 +1,22 @@
+<view class="page">
+  <view wx:if="{{state === 'loading'}}" class="hint">正在登录…</view>
+
+  <view wx:elif="{{state === 'failed'}}" class="center">
+    <text class="error">{{message}}</text>
+    <button size="mini" type="primary" bindtap="onRetry">重新登录</button>
+  </view>
+
+  <block wx:else>
+    <view class="section-title">我的任务</view>
+    <view wx:if="{{tasks.length === 0}}" class="hint">暂无任务，等待下单后会出现在这里</view>
+    <view wx:for="{{tasks}}" wx:key="taskId" class="card" bindtap="onOpenTask" data-task-id="{{item.taskId}}">
+      <text class="card-title">{{item.skuName}}</text>
+      <text class="badge badge-{{item.stage}}">{{item.stageLabel}}</text>
+    </view>
+
+    <view class="footer">
+      <button size="mini" bindtap="onOpenProfile">我的声音与形象档案</button>
+      <text class="muted">成员 ID：{{memberId}}</text>
+    </view>
+  </block>
+</view>
